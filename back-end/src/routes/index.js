@@ -1,25 +1,83 @@
-const axios = require('../middleware/axios');
-const { response } = require('express');
 const router = require('express').Router();
-// router.get('/',(req,res) => { res.send('hola')});
+const Partido = require('./models/Partido');
+const { response } = require('express');
 
-const downloadFoxes = async () =>{
-    const cheerio = require('cheerio')
+router.get('/partido/ultimoPartido', async (req, res, next) => {
+    const partido = await Partido
+    .find(req.params.id)
+    .sort({$natural:-1})
+    .limit(1)
+    .then(perfiles =>{
+      res
+      .status(200)
+      .send(perfiles)})
+    .catch(err=>{console
+      .log(err)})
+    
+  });
 
-    const response = await axios.get('https://www.lcfc.com/matches/fixtures');
-    // console.log(response)
-    // router.get('/'), () => {res.send(response.data)}
-    const $ = cheerio.load(response.data)
-    const listaPartidos = $('.matches-list');
-    console.log(listaPartidos);
-    listaPartidos.each((i,elem) => {
-        const title = $(elem).find('.match-item__team match-item__team--away').text().trim();
-        console(title)
-    })
-    // router.get('/'), () => {res.send(listaPartidos)}
+router.get('/partido/:id?', async (req, res, next) => {
+  const partido = await Partido
+  .findby(req.params.id)
+  .then(perfiles =>{
+    res
+    .status(200)
+    .send(perfiles)
+  })
+  .catch(
+    err=>{console
+      .log(err)
+  })
+});
 
-}
+
+router.get('/partido/fecha?', async (req, res, next) => {
+  const partido = await Partido
+  .findby(req.params.fecha)
+  .then(response =>{
+    res
+    .status(200)
+    .send(response)})
+  .catch(err=>{
+    console
+    .log(err)
+  })
+});
+  
+router.get('/perfil/:intervalo?', async (req, res, next) => {
+  const partido = await Partido
+  .findby(req.params.intervalo)
+  .then(response =>{
+    res
+    .status(200)
+    .send(response)})
+  .catch(err=>{console.log(err)
+  })
+});
+
+router.get('/perfil/:masGol?', async (req, res, next) => {
+  const partido = await Partido
+  .findby(req.params.gol)
+  .then(response =>{
+    res
+    .status(200)
+    .send(response)})
+  .catch(err=>{console.log(err)
+  })
+});
+  
+  
+router.post('/perfil/add', async (req, res, next) => {
+  const partido = new Partido(req.body)
+  await partido
+  .save()
+  .then(response =>{
+    res.status(200)
+    res.send(response)})
+  .catch(err=>{
+    console.log(err)
+  })
+});
+
 
 module.exports = router;
-
-module.exports = downloadFoxes;

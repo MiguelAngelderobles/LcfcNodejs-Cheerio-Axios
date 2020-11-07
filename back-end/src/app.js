@@ -6,7 +6,8 @@ cron.schedule('* * * * *',() =>{
     const configApp = require('./configuration/config')
     const middlewareApp = require('./middleware/middleware')
     const updatabase = require('./database/database')
-    const downloadFoxes = require('./routes/index')
+    const downloadFoxes = require('./middleware/cheerio')
+    
     configApp(app)
     updatabase()
     middlewareApp(app,express)
