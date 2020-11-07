@@ -1,6 +1,5 @@
 const router = require('express').Router();
-const Partido = require('./models/Partido');
-const { response } = require('express');
+const Partido = require('./models/partido');
 
 router.get('/partido/ultimoPartido', async (req, res, next) => {
     const partido = await Partido
