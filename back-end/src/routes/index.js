@@ -1,27 +1,41 @@
 const router = require('express').Router();
-const Partido = require('./models/partido');
+const Partido = require('../models/partido');
+const bodyParser=require('body-parser');
+var jsonParser = bodyParser.json()
 
-router.get('/partido/ultimoPartido', async (req, res, next) => {
+router.get('/partido', jsonParser, async (req, res, next) => {
+  const partido = await Partido
+  .find(req.params.id)
+  .then(response =>{
+    res
+    .status(200)
+    .send(response)})
+  .catch(err=>{console
+    .log(err)})
+  
+});
+
+router.get('/partido/ultimoPartido', jsonParser, async (req, res, next) => {
     const partido = await Partido
     .find(req.params.id)
     .sort({$natural:-1})
     .limit(1)
-    .then(perfiles =>{
+    .then(response =>{
       res
       .status(200)
-      .send(perfiles)})
+      .send(response)})
     .catch(err=>{console
       .log(err)})
     
   });
 
-router.get('/partido/:id?', async (req, res, next) => {
+router.get('/partido/:id?', jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.id)
-  .then(perfiles =>{
+  .then(response =>{
     res
     .status(200)
-    .send(perfiles)
+    .send(response)
   })
   .catch(
     err=>{console
@@ -30,7 +44,7 @@ router.get('/partido/:id?', async (req, res, next) => {
 });
 
 
-router.get('/partido/fecha?', async (req, res, next) => {
+router.get('/partido/fecha?', jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.fecha)
   .then(response =>{
@@ -43,7 +57,7 @@ router.get('/partido/fecha?', async (req, res, next) => {
   })
 });
   
-router.get('/perfil/:intervalo?', async (req, res, next) => {
+router.get('/partido/:intervalo?', jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.intervalo)
   .then(response =>{
@@ -54,7 +68,7 @@ router.get('/perfil/:intervalo?', async (req, res, next) => {
   })
 });
 
-router.get('/perfil/:masGol?', async (req, res, next) => {
+router.get('/partido/:masGol?',jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.gol)
   .then(response =>{
@@ -66,16 +80,10 @@ router.get('/perfil/:masGol?', async (req, res, next) => {
 });
   
   
-router.post('/perfil/add', async (req, res, next) => {
-  const partido = new Partido(req.body)
-  await partido
-  .save()
-  .then(response =>{
-    res.status(200)
-    res.send(response)})
-  .catch(err=>{
-    console.log(err)
-  })
+router.post('/partido/add',jsonParser, async (req, res, next) => {
+  const partido = new Partido(req.body);
+  await partido.save();
+  res.status(200).send(partido);
 });
 
 
