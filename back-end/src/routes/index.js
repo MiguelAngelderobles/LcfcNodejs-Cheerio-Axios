@@ -2,6 +2,12 @@ const router = require('express').Router();
 const Partido = require('../models/partido');
 const bodyParser=require('body-parser');
 var jsonParser = bodyParser.json()
+const downloadFoxes = require('../middleware/cheerio');
+const validacion = require('../validation/validation');
+
+router.get('/', (req,res,next) => {
+
+  console.log(downloadFoxes)})
 
 router.get('/partido', jsonParser, async (req, res, next) => {
   const partido = await Partido
@@ -29,9 +35,9 @@ router.get('/partido/ultimoPartido', jsonParser, async (req, res, next) => {
     
   });
 
-router.get('/partido/:id?', jsonParser, async (req, res, next) => {
+router.get('/partido/:id', jsonParser, async (req, res, next) => {
   const partido = await Partido
-  .findby(req.params.id)
+  .findById(req.params.id)
   .then(response =>{
     res
     .status(200)
@@ -44,7 +50,7 @@ router.get('/partido/:id?', jsonParser, async (req, res, next) => {
 });
 
 
-router.get('/partido/fecha?', jsonParser, async (req, res, next) => {
+router.get('/partido/:fecha', jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.fecha)
   .then(response =>{
@@ -57,7 +63,7 @@ router.get('/partido/fecha?', jsonParser, async (req, res, next) => {
   })
 });
   
-router.get('/partido/:intervalo?', jsonParser, async (req, res, next) => {
+router.get('/partido/:intervalo', jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.intervalo)
   .then(response =>{
@@ -68,7 +74,7 @@ router.get('/partido/:intervalo?', jsonParser, async (req, res, next) => {
   })
 });
 
-router.get('/partido/:masGol?',jsonParser, async (req, res, next) => {
+router.get('/partido/:masGol',jsonParser, async (req, res, next) => {
   const partido = await Partido
   .findby(req.params.gol)
   .then(response =>{
@@ -80,11 +86,22 @@ router.get('/partido/:masGol?',jsonParser, async (req, res, next) => {
 });
   
   
-router.post('/partido/add',jsonParser, async (req, res, next) => {
+router.post('/partido/add',validacion.validate(validacion.validarPostPartido),jsonParser, async (req, res, next) => {
   const partido = new Partido(req.body);
-  await partido.save();
-  res.status(200).send(partido);
+  await partido.save()
+  .then(response =>{
+    res
+    .status(200)
+    .send(response)})
+  .catch(err=>{console.log(err)
+  })
 });
 
+router.use((error,req,res,next)=>{
+  res.status(404).json({
+    status:'error',
+    message:error.message
+  })
+})
 
 module.exports = router;

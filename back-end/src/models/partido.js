@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Partido = new mongoose.Schema({
     fecha: String,
+    lugar:String,
     equipoLocal:String,
     golLocal:Number,
     equipoVisitante:String,
