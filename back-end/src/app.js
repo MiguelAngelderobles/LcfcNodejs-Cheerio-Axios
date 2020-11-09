@@ -8,11 +8,10 @@ const updatabase = require('./database/database')
 configApp(app)
 updatabase()
 middlewareApp(app,express)
-//holaaaaa
+
 app.use('/', require('./routes/index'));
 
-
-// cron.schedule('* * * * *',() =>{
-//     const downloadFoxes = require('./middleware/cheerio')
-//     downloadFoxes()
-// });
+cron.schedule('* * * * *',() =>{
+    const downloadFoxes = require('./middleware/cheerio')
+    downloadFoxes()
+});
